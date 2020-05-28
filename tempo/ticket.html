@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Random Result - Draw ticket</title>
+<meta property="og:title" content="Draw ticket - N° 1738620G88X3" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Random Result" />
+<meta property="og:description" content="for Ziyu" />
+<meta property="og:url" content="https://www.randomresult.com/ticket.php?t=1738620G88X3" />
+<meta property="og:updated_time" content="2020-05-18T01:13:57+00:00" />
+
+<meta property="og:image" content="http://www.randomresult.com/img/rr_share.png" />
+<meta property="og:image:secure_url" content="https://www.randomresult.com/img/rr_share.png" />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+
+<meta property="og:locale" content="en_US" />
+
+<link href="./style.css" rel="stylesheet" type="text/css" />
+<link href="./images/favicon.png" rel="icon"/>
+<style>
+
+/* total back-ground for the popup  */
+#overlay-back {
+	visibility: hidden;
+	position: fixed;
+	left: 0px;
+	top: -1px;
+	width:100%;
+	height:100%;
+	text-align:center;
+	z-index: 1000;
+	background: rgba(0, 0, 0, 0.85) none repeat scroll 0% 0%;
+}
+
+/* the popup  */
+#overlay-box {
+     width:270px;
+     margin: 100px auto;
+     background-color: #fff;
+     background: #FFF none repeat scroll 0% 0%;
+	 border:1px solid #000;
+     padding:15px;
+     border-radius:5px;
+     text-align:center;
+}
+
+/* a common button in the popup */
+.rr-pop-button {
+  font-size: 15px;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid #CCCCCC ;
+  display: block;
+  height: 40px;
+  vertical-align: middle;
+  text-align: center;
+}
+.fa fa-twitter{
+}
+/* the special button in the popup */
+.rr-pop-btn-special {
+	/*border: medium none;*/
+	color: #000000;
+    box-shadow: none;
+	background-color: #DADADA
+}
+
+.rr-pop-btn-text {
+	display: inline-block;
+	padding-top: 10px;
+    vertical-align: middle; /* seems to no work */
+    text-align: center;
+}
+
+.rr-pop-btn-share {
+    width: 18px;
+    height: 18px;
+    vertical-align: text-bottom;
+    border: #CCC 1px solid;
+    padding: 2px;
+    border-radius: 4px;
+    cursor:pointer;
+}
+
+.rr-icon {
+    vertical-align: bottom;
+    margin-right: 8px;
+    width:  24px;
+    height: 24px;
+}
+
+</style>
+<script>
+
+// Hide or show the modal popup for sharing the ticket.
+function overlay() {
+	el = document.getElementById("overlay-back");
+	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+/**
+ * Tools functions
+ */
+
+/**
+ * Apply the locale date if the target is found.
+ */
+function f_apply_loc_if(target_id, date_utc) {
+    
+    var el = document.getElementById(target_id);
+    if (el) {
+        el.innerHTML = f_date_utc2loc(date_utc);
+    }
+    
+}
+
+/**
+ * Return the time difference between the Local time and the UTC time.
+ * @param  string target_id (optional) a target element id wher to set the value
+ * @return string the time difference in format : '+00' or '+00:30'.
+ *
+ */
+function f_date_diff(target_id) {
+    
+    var diff = f_date_tz(true);
+    var p = diff.indexOf(':00');
+    if (p > 0) {
+        diff = diff.substring(0,p);
+    }
+    
+    if (target_id) {
+        var el = document.getElementById(target_id);
+        if (el) {
+            el.innerHTML = diff;
+        }
+    }
+    
+    return diff;
+}
+
+/**
+ * Convert a date string « yyyy-mm-dd hh:nn:ss » from Local time (according to the browser) into UTC time. 
+ */
+function f_date_loc2utc(txt) {
+    
+    var p, d, res;
+
+    // Convert to ISO in order to be compatibility Egde
+    // Replace the space separator with a 'T'
+
+    p = txt.indexOf(' ');
+
+    if (p == 10) {
+        txt = txt.substring(0, p) + 'T' + txt.substring(p+1);
+    }
+
+    d = new Date(txt); // take the string date has if is was local time
+
+    if (isNaN(d)) {
+        // invalid date
+        return '';
+    } else {
+
+        res = d.toISOString();
+        // Delete milliseconds
+        p = res.indexOf('.');
+        if (p >= 0) {
+            res = res.substring(0, p);
+        }
+        // Delete Z (shoud no have
+        p = res.indexOf('Z');
+        if (p >= 0) {
+            res = res.substring(0, p);
+        }
+        // Replace T with space
+        p = res.indexOf('T');
+        if (p >= 0) {
+            res = res.substring(0, p) + ' ' + res.substring(p+1);
+        }
+        return res;
+    }
+    
+}
+
+/**
+ * Convert a date string « yyyy-mm-dd hh:nn:ss » from UTC time into Local time (according to the browser). 
+ */
+function f_date_utc2loc(txt) {
+    
+    return f_date_loc2utc(txt + f_date_tz());
+    
+}
+
+/** 
+ * Return the Timezone offset of the current browser in a format compatible for ISO string.
+ * ISO string is for example '2019-02-01T23:55:12.789Z' for UTC, or '2019-02-01T23:55:12.789+01:30' for Timezone +1h30
+ * @param inv       (optional) Set true to invert the sign of the offset.
+ * @param val_debug (optional) The offset to use in minutes, insteaf of the current browser Timezone offset.
+ * @return string For example: '+01:30' or '-02:00'
+ */
+function f_date_tz(inv, val_debug) {
+    
+    var d = new Date();
+    var t = d.getTimezoneOffset();
+    if (val_debug !== undefined) {
+        t = val_debug;
+    }
+    if (inv) {
+        t =  - t;
+    }
+    var m = Math.abs(t) % 60; // minutes
+    var h = (Math.abs(t)  - m) / 60; // hours
+    var s = (t >= 0) ? '+' : '-'; // sign
+    
+    m = ((m >= 10) ? '' : '0') + m;
+    h = ((h >= 10) ? '' : '0') + h;
+    
+    return s + h + ':' + m;
+    
+}
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);/* for phone */
+  document.execCommand("copy");
+  document.getElementById("btn-text").innerHTML = "Copied!";
+  window.getSelection().removeAllRanges();
+}
+
+
+
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-157533-7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-157533-7');
+</script>
+
+</head>
+<body>
+<!-- popup -->
+<div id="overlay-back">
+     <div id="overlay-box">
+        <div>
+		   <h3 style="vertical-align: middle; height: 30px;color:#000;">Share this ticket:</h3>
+		</div>
+        <div>
+        	<a class="rr-pop-button" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.randomresult.com%2Fticket.php%3Ft%3D1738620G88X3" target="_blank">
+            	<i class="fa fa-twitter" id="share-icon"></i><span class="rr-pop-btn-text">Twitter</span>
+            </a>
+        	<a class="rr-pop-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.randomresult.com%2Fticket.php%3Ft%3D1738620G88X3" target="_blank">
+            	<i class="fa fa-facebook-f" id="share-icon"></i><span class="rr-pop-btn-text">Facebook</span>
+            </a>
+        	<a class="rr-pop-button" href="mailto:?body=https%3A%2F%2Fwww.randomresult.com%2Fticket.php%3Ft%3D1738620G88X3" target="_blank">
+            	<i class="fa fa-envelope" id="share-icon"></i><span class="rr-pop-btn-text">E-mail</span>
+            </a>
+            <a href="#" onclick="overlay()" class="rr-pop-button rr-pop-btn-special">
+                <span class="rr-pop-btn-text">Cancel</span>
+            </a>
+        </div>
+     </div>
+
+</div>
+
+
+<div style="text-transform:uppercase;text-align:center;padding:10px;" ><h1 style="display:inline;font-size:3em;">Ticket</h1></div>
+<div style="margin-left:auto; margin-right:auto; max-width:500px;">
+<form method="post" action="ticket.php?t=1738620G88X3">
+
+<div>
+<table class="rr-grid rr-back1">
+  <tr>
+    <td colspan="2">
+      <img src="./images/rr_ticket_2.png" class="rr-icon" alt="Ticket" style="display:inline" />  
+      <span class="ticket-num">Ticket number:</span> <h2 class="ticket-value"style="display:inline">738620G88X3</h2>
+        <img style="float:right;" src="./images/share.png" alt="Share" class="rr-pop-btn-share" onclick='overlay()' />
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="rr-discrete">
+      <table class="rr-grid">
+      <tr>
+        <td style="padding-right:none;display:block;text-align:center;">
+        	<input id="myInput" type="text" class="rr-form-control" style="width: 100%; text-align: left;" value="https://www.randomresult.com/ticket.php?t=1738620G88X3">
+        </td>
+        <td style="display:block;text-align:center;">
+                <a id="btn" class="btn" onclick="myFunction()"><i style="font-size: 14px;padding: 2px;" class="fa fa-clone"></i><span id="btn-text">Copy to clipboard</span></a>
+            </div>
+        </td>
+        </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="rr-discrete">
+    	<em>
+        The ticket number is password for viewing the ticket.<br />
+    	The ticket is a proof for those who receive the ticket number before the drawn date.</em></td>
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td class="rr-caption">Type: 
+      </td>
+    <td class="rr-value">Pick items
+    <br />
+    &bull; Items:      
+    <div style="margin-left:20px;">
+
+        item 1<br/>
+        item 2<br/>
+        item 3<br/>
+        item 4<br/>
+        item 5
+        </span>
+    </div>
+    &bull; Number of items to pick: 2</span></td>
+  </tr>
+  
+  <tr>
+    <td class="rr-caption">Description:</td>
+      <td class="rr-value" >for Ziyu</span></td>
+  </tr>
+  <tr>
+    <td class="rr-caption">Drawing: 
+    </td>
+      <td class="rr-value"> Manually</span></td>
+  </tr>
+  
+  
+  <tr>
+    <td class="rr-caption">Created at:</td>
+    <td class="rr-value">
+        <span class="ans" id="tick_date_loc">2020-05-18 01:13:57 UTC</span>
+        <img class="rr-timezone" src="./images/time-zone.png" alt="Coordinated Universal Time (UTC)" title="Coordinated Universal Time (UTC) : 2020-05-18 01:13:57" />
+        <span id="tick_date_diff" class="rr-timezone-diff"></span> 
+    </td>
+  </tr>
+  <tr>
+    <td class="rr-caption">Created by IP:</td>
+      <td class="rr-value">77.132.240.208</span></td>
+  </tr>
+</table>
+</div>
+
+<div style="margin-top: 16px;">
+<table class="rr-grid rr-back1"> 
+  <tr>
+    <td class="rr-caption">
+	  
+	  <h2>Result:</h2>
+	</td>
+    <td class="rr-value">
+		&nbsp;
+	</td>
+  </tr>
+  
+  
+  
+  <tr>
+    <td class="rr-caption">
+	  <!--  -->
+	  Drawn at:
+	</td>
+    <td class="rr-value">
+        <span class="ans" id="date_drawn_loc">2020-05-18 01:14:02 UTC</span>
+        <img class="rr-timezone" src="./images/time-zone.png" alt="Coordinated Universal Time (UTC)" title="Coordinated Universal Time (UTC) : 2020-05-18 01:14:02" />
+        <span id="date_drawn_diff" class="rr-timezone-diff"></span> 
+    </td>
+  </tr>
+  <tr>
+    <td class="rr-caption">Drawn by IP:</td>
+      <td class="rr-value">77.132.240.208</span></td>
+  </tr>
+  
+  
+  
+  
+
+  
+  
+  
+  <tr>
+    <td colspan="2" class="rr-result rr-sep">
+	  <!--  -->
+      <table border="0" cellspacing="0" cellpadding="2">
+        <tr>
+          <td style="color:#fff;" align="right">Place&nbsp;#1:</td>
+          <td>&nbsp;</td>
+          <td>item 3 </td>
+        </tr>
+        <tr>
+          <td style="color:#fff;" align="right">Place&nbsp;#2:</td>
+          <td>&nbsp;</td>
+          <td >item 1</td>
+        </tr>
+      </table>
+
+
+    </td>
+      <td>
+    <div style="text-align:center;"><a id="btn" style="margin-top: 25px;" class="btn" href="./">
+        &nbsp;<i style="="class="fa fa-home"></i><span class="btn-text">&nbsp;Home&nbsp;</span>
+                </a></div>
+      </td>
+</table>
+</div>
+
+</form>
+</div>
+<p>&nbsp;</p>
+
+<script>
+  // Convert current date-time from local to UTC
+  f_apply_loc_if('tick_date_loc', '2020-05-18 01:13:57');
+  f_apply_loc_if('tick_shoot_date_loc', '0000-00-00 00:00:00');
+  f_apply_loc_if('date_drawn_loc', '2020-05-18 01:14:02'); // the field « res_date_utc » may not exist if « shoot_info = 0 »
+  f_date_diff('tick_date_diff');
+  f_date_diff('tick_shoot_date_diff');
+  f_date_diff('date_drawn_diff');
+</script> 
+
+</body>
+</html>

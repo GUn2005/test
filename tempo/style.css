@@ -1,0 +1,245 @@
+@charset "utf-8";
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 0.8em;
+	color:#fff;
+	background: url("./images/background.jpg") 0 / cover fixed;
+}
+em{
+color:#fff;
+}
+span{
+
+}
+
+td, th, div, p, a, ol, ul {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size:inherit;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-weight: bold;
+	margin: 0px;
+}
+.ticket-num{
+
+font-size:20px;
+
+}
+hr {
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+  border-style: solid none;
+  border-width: 1px 0;
+  margin: 9px 0;
+}
+.rr-discrete {
+	font-size: 0.8em;
+	color: #474747; /* ajusted for color contrast against the background */
+}
+.rr-err {
+	color: #FF0000;
+}
+.rr-back1 {
+	background: rgba(0, 0, 0, 0.8);
+}
+.rr-sep {
+	color: #3600FF;
+}
+.rr-result {
+	font-weight: bold;
+	font-size: 160%;
+	color:#009BFF;
+}
+.rr-fieldset {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.rr-button {
+    padding: .175rem .55rem; /* Boostrap is: .375rem .75rem; */
+    border-radius: .25rem;
+    border: 1px solid #adadad;
+    text-align: center;
+    vertical-align: middle;    
+}
+.rr-form-control {
+    color: #fff;
+    padding: .175rem .35rem; /* Boostrap is: .375rem .75rem; */
+    font-size:15px;
+    border-radius:10px;
+    border: none;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background:rgba(206,201,201,0.2);
+}
+input.rr-form-control {
+    text-align: center;
+    width: 45px;
+    padding:3px;
+}
+textarea.rr-form-control {
+    text-align: baseline;
+}
+.rr-drawbox {
+	color: #666;
+	font-size: 0.8em;
+	padding: 2px;
+	border: 1px dashed #666;
+    border-radius: 4px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.rr-resetbtn {
+	font-size: 1.2em;
+	color: #666;
+	background-color: #FFF;
+	padding: 0px 3px 0px 3px;
+	margin: 0px;
+	text-decoration: none;
+	border: thin solid #999;
+    border-radius: 4px;
+}
+
+/* GRID RESULT */
+
+/* cells containing the caption, can be used with span */
+.rr-caption {
+	white-space: nowrap;
+}
+td.rr-caption {
+	vertical-align:top;
+}
+/* cells containing the value */
+.rr-value {
+	padding-left:10px;
+    font-family:ShentoxW04-Regular;
+    font-size:larger;
+    font-weight: bold;
+}
+
+.rr-timezone {
+    width :16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.rr-timezone-diff {
+	color: #fff; /* ajusted for color contrast against the background */
+}
+
+/* the main table displaying the result in a grid */
+table.rr-grid {
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+	padding:20px;
+
+    border-radius: 6px;
+}
+table.rr-grid td {
+	padding: 4px;
+	border: 0;
+}
+table.rr-grid-inside {
+	width: auto;
+}
+table.rr-grid-inside td {
+	padding: 2px;
+	border: 0;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.btn {
+
+	 position: relative;
+	 width: 100%;
+	 padding: 6px 0;
+	 margin: 36px 0 18px 0;
+	 font-size: 1.2em;
+	 color: white;
+	 background: transparent;
+	 border: 2px solid rgba(255, 255, 255, 1);
+	 border-radius:2px;
+	 outline: none;
+	 cursor: pointer;
+	 overflow: hidden;
+	 transition: 0.5s;
+	 display:block;
+	 text-decoration:none;
+}
+.btn::before {
+	 position: absolute;
+	 content: "";
+	 top: 0;
+	 left: 0;
+	 width: 100%;
+	 height: 100%;
+	 background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+	 transform: translateX(-100%);
+	 transition: 0.5s;
+}
+.btn:hover {
+	 box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.5);
+}
+.btn:hover::before {
+	 transform: translateX(100%);
+}
+#btn-text{
+    padding-left:2px;
+    padding-right:2px;
+    text-align:center;
+}
+#share-icon{
+    display: inline-block;
+    top: 18%;
+    position: relative;
+    left: -2%;
+}
+#btn{
+    width: -moz-max-content;
+    margin-top:15px;
+    margin-bottom:-40px;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
